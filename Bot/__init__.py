@@ -1,5 +1,8 @@
-import robin_stocks as rs
+import os
 import json
+import glob
+import robin_stocks as rs
+
 from urllib.request import urlopen, Request
 
 class Bot:
@@ -87,6 +90,8 @@ class Bot:
     def Transactions(self):
         print("Here are all of the recent transactions")
 
+
+
     ### Primary
     def Find(self, data):
         """
@@ -114,8 +119,17 @@ class Bot:
 
         return data
 
-    def Finance(self, name):
+    def Finance(self, data):
+        return 0
 
-    def Algorithm(self, name):
-        
-    
+    def Algorithm(self, data):
+        return 0
+
+
+    ###
+    def Find_Function(self, function_type, name):
+        file_strux = ["Find", "Finance", "Algorithm"]
+        file_num = file_strux.indexOf(function_type) + 1
+        path = "./" + file_num + "_" + function_type
+
+        text_files = glob.glob(path + "/**/" + name + ".py", recursive = True)
