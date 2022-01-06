@@ -1,3 +1,4 @@
+import robin_stocks as rs
 import json
 from urllib.request import urlopen, Request
 
@@ -39,6 +40,7 @@ class Bot:
         print("")
         print("# Current Bot ==================================================================")
         print("# Bot Number   : " + str(self.bot_number))
+        print("# Bot Name     : " + str(self.name))
         print("# Bot Username : " + self.username
         print("# Bot password : " + self.hashed_password
         print("# ==============================================================================")
@@ -51,6 +53,9 @@ class Bot:
         print("# ==============================================================================")
         print("")
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
+
+        # Robinhood initialization
+        rs.login(username,password)
 
     ### Meta
     def Info(self, unhash = False):
@@ -66,6 +71,10 @@ class Bot:
         print("# Bot password : " + password
         print("# ==============================================================================")
         print("")
+
+    def Holdings(self):
+        my_stocks = rs.build_holdings()
+        df = pd.DataFrame(my_stocks)
 
     def Functions(self, type):
         if type == "Find":
