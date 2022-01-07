@@ -10,7 +10,11 @@ class Bot:
     Bot_List = []
     bot_number = 0
 
-    def __init__(self, username, password, name = username):
+    def __init__(self, username, password, name = ""):
+        # Handling
+        if (name == ""):
+            name = username
+
         # Meta info for multiple bots
         Bot.Bot_List.append(self)
         Bot.bot_number += 1
@@ -19,6 +23,7 @@ class Bot:
         # Data Constructor
         self.username = username
         self.password = password
+        self.name = name
 
         # "Hashing" password for display and identification
         # Yes I'm aware that this is not actually hashing, it is called a play on words because I am using hashtags
@@ -44,8 +49,8 @@ class Bot:
         print("# Current Bot ==================================================================")
         print("# Bot Number   : " + str(self.bot_number))
         print("# Bot Name     : " + str(self.name))
-        print("# Bot Username : " + self.username
-        print("# Bot password : " + self.hashed_password
+        print("# Bot Username : " + self.username)
+        print("# Bot password : " + self.hashed_password)
         print("# ==============================================================================")
         print("# author       : Reed Graff")
         print("# website      : TheReedGraff.com")
@@ -58,7 +63,7 @@ class Bot:
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
 
         # Robinhood initialization
-        rs.login(username,password)
+        #rs.login(username,password)
 
     ### Meta
     def Info(self, unhash = False):
@@ -70,8 +75,8 @@ class Bot:
         print("")
         print("# Current Bot ==================================================================")
         print("# Bot Number   : " + str(self.bot_number))
-        print("# Bot Username : " + self.username
-        print("# Bot password : " + password
+        print("# Bot Username : " + self.username)
+        print("# Bot password : " + password)
         print("# ==============================================================================")
         print("")
 
@@ -89,11 +94,16 @@ class Bot:
 
     def Transactions(self):
         print("Here are all of the recent transactions")
+        """
+        sorted_data = data
+        with open("transactions.json", "w") as outfile:
+            json.dump(sorted_data, outfile, indent=4)
+        """
 
 
 
     ### Primary
-    def Find(self, data):
+    def Find(self, input_data):
         """
         # Example input data
         {
@@ -103,12 +113,17 @@ class Bot:
             ]
         }
         """
-        # Dynamically Import Find function
-        from .Find._FindV1 import FindV1
 
-        # Return Find data
+        # Declare variables for importing
+        package = self.Find_Function_Path("Find", input_data["function_name"]).replace("\\", "/").replace(".py", "").replace("/", ".")
+        file_name = "_" + input_data["function_name"]
+        name = input_data["function_name"]
 
+        # Dynamically import file function
+        imported = getattr(__import__(package, fromlist=[file_name]), name)
 
+        # Dynamically call function
+        find_data = imported(self, "hello")
         """
         # Example Find Data
         {
@@ -117,7 +132,7 @@ class Bot:
         }
         """
 
-        return data
+        return find_data
 
     def Finance(self, data):
         return 0
@@ -127,9 +142,10 @@ class Bot:
 
 
     ###
-    def Find_Function(self, function_type, name):
+    def Find_Function_Path(self, function_type, name):
         file_strux = ["Find", "Finance", "Algorithm"]
-        file_num = file_strux.indexOf(function_type) + 1
-        path = "./" + file_num + "_" + function_type
+        file_num = file_strux.index(function_type) + 1
+        path = "Bot/" + str(file_num) + "_" + function_type
 
-        text_files = glob.glob(path + "/**/" + name + ".py", recursive = True)
+        file_path = glob.glob(path + "/**/_" + name + ".py", recursive = True)[0]
+        return file_path

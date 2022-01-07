@@ -1,3 +1,20 @@
+import Bot # This is the local Python Module that we made
+
+
+
+bot_1 = Bot.Bot("ya boi", "just got bamboozled")
+
+find_input = {
+    "function_name": "One_Stock",
+    "parameters": [
+        "Random stock name"
+    ]
+}
+
+print(bot_1.Find(find_input))
+
+#print(bot_1.Find_Function_Path("Find", "Value_Investing"))
+
 """
 ways for this to work:
 
