@@ -40,3 +40,6 @@ Branches:
 ## <a id="Notes">Notes</a>
 ML Ideas:
 - Value Investing = finding undervalued stocks... similar to nft logic...
+External Libraries:
+- "Being used": robin_stocks... (Guide can be seen here: https://algotrading101.com/learn/robinhood-api-guide/)
+- "Not being used": https://github.com/sanko/Robinhood

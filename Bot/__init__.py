@@ -1,7 +1,7 @@
 import os
 import json
 import glob
-import robin_stocks as rs
+import robin_stocks.robinhood as rs
 
 from urllib.request import urlopen, Request
 
@@ -10,7 +10,7 @@ class Bot:
     Bot_List = []
     bot_number = 0
 
-    def __init__(self, username, password, name = ""):
+    def __init__(self, username = "", password = "", name = ""):
         # Handling
         if (name == ""):
             name = username
@@ -48,9 +48,9 @@ class Bot:
         print("")
         print("# Current Bot ==================================================================")
         print("# Bot Number   : " + str(self.bot_number))
-        print("# Bot Name     : " + str(self.name))
-        print("# Bot Username : " + self.username)
-        print("# Bot password : " + self.hashed_password)
+        print("# Bot Name     : " + str(self.name) if (name != "") else "Not Defined")
+        print("# Bot Username : " + self.username if (username != "") else "Not Defined")
+        print("# Bot password : " + self.hashed_password if (hashed_password != "") else "Not Defined")
         print("# ==============================================================================")
         print("# author       : Reed Graff")
         print("# website      : TheReedGraff.com")
@@ -62,8 +62,8 @@ class Bot:
         print("")
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
 
-        # Robinhood initialization
-        #rs.login(username,password)
+        if (username != "" and password !=  ""):
+            rs.login(username, password)
 
     ### Meta
     def Info(self, unhash = False):
@@ -93,12 +93,27 @@ class Bot:
             print("Here are all of the Algorithm functions")
 
     def Transactions(self):
-        print("Here are all of the recent transactions")
-        """
-        sorted_data = data
-        with open("transactions.json", "w") as outfile:
-            json.dump(sorted_data, outfile, indent=4)
-        """
+        print("Here are all of the recent transactions: \n")
+
+        file = open('Assets/Transactions.json')
+        data = json.load(file)
+        return data
+
+    
+    def Login(self, username, password):
+        rs.login(username, password)
+        self.username = username
+        self.password = password
+
+        # Hashed Password
+        hashed_password = password[0:3]
+        for i in range(0, len(self.password)-3):
+            hashed_password += "#"
+        self.hashed_password = hashed_password
+
+    def LogOut(self):
+        rs.logout()
+
 
 
 
@@ -119,29 +134,47 @@ class Bot:
         file_name = "_" + input_data["function_name"]
         name = input_data["function_name"]
 
-        # Dynamically import file function
-        imported = getattr(__import__(package, fromlist=[file_name]), name)
+        # Dynamically import file function & set as attribute of class       
+        setattr(Bot, 'imported', getattr(__import__(package, fromlist=[file_name]), name))
 
         # Dynamically call function
-        find_data = imported(self, "hello")
+        find_data = self.imported(input_data)
+
+        # Return the new data
+        return find_data
+
+    def Finance(self, input_data):
         """
-        # Example Find Data
+        # Example input data
         {
-            "Ticker": "TSLA",
-            ""
+            "function_name": "Some_Random_name",
+            "parameters": [
+                "Random stock name"
+            ]
         }
         """
 
-        return find_data
+        # Declare variables for importing
+        package = self.Find_Function_Path("Finance", input_data["function_name"]).replace("\\", "/").replace(".py", "").replace("/", ".")
+        file_name = "_" + input_data["function_name"]
+        name = input_data["function_name"]
 
-    def Finance(self, data):
-        return 0
+        # Dynamically import file function & set as attribute of class       
+        setattr(Bot, 'imported', getattr(__import__(package, fromlist=[file_name]), name))
+
+        # Dynamically call function
+        finance_data = self.imported(input_data)
+
+        # Return the new data
+        return finance_data
 
     def Algorithm(self, data):
         return 0
 
 
-    ###
+
+
+    ### Supporting Functions
     def Find_Function_Path(self, function_type, name):
         file_strux = ["Find", "Finance", "Algorithm"]
         file_num = file_strux.index(function_type) + 1
