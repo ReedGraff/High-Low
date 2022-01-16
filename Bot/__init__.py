@@ -10,7 +10,7 @@ class Bot:
     Bot_List = []
     bot_number = 0
 
-    def __init__(self, username = "", password = "", name = ""):
+    def __init__(self, username, password, name = ""):
         # Handling
         if (name == ""):
             name = username
@@ -62,8 +62,42 @@ class Bot:
         print("")
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3"}
 
-        if (username != "" and password !=  ""):
-            rs.login(username, password)
+        # Robinhood Login
+        rs.login(username, password)
+
+        # Create "Transactions" json and add pertinent info
+        file_exists = os.path.isfile("Bot/Assets/Transactions.json") 
+        if not file_exists:
+            file = open("Bot/Assets/Transactions.json", "w+")
+            starting_data = {
+                self.name: {
+                    "Current Amount Spent": 0, 
+                    "Current Holdings (From Bot)": [
+                    ],
+                    "Transactions": [
+                    ]
+                }
+            }
+
+            json.dump(starting_data, file, indent=4)
+        else:
+            file = open("Bot/Assets/Transactions.json", "r+")
+            data = json.load(file)
+
+            if (self.name not in data.keys()):
+                additional_data = {
+                    self.name: {
+                        "Current Amount Spent": 0,
+                        "Current Holdings (From Bot)": [
+                        ],
+                        "Transactions": [
+                        ],
+                    }
+                }
+                data.update(additional_data)
+                file.seek(0)
+                json.dump(data, file, indent=4)
+
 
     ### Meta
     def Info(self, unhash = False):
@@ -98,7 +132,6 @@ class Bot:
         file = open('Assets/Transactions.json')
         data = json.load(file)
         return data
-
     
     def Login(self, username, password):
         rs.login(username, password)
@@ -168,7 +201,29 @@ class Bot:
         # Return the new data
         return finance_data
 
-    def Algorithm(self, data):
+    def Algorithm(self, input_data):
+        """
+        # Example input data
+        {
+            "function_name": "Some_Random_name",
+            "parameters": [
+                {find_output},
+                {finance_output}
+            ]
+        }
+        """
+
+        # Declare variables for importing
+        package = self.Find_Function_Path("Algorithm", input_data["function_name"]).replace("\\", "/").replace(".py", "").replace("/", ".")
+        file_name = "_" + input_data["function_name"]
+        name = input_data["function_name"]
+
+        # Dynamically import file function & set as attribute of class       
+        setattr(Bot, 'imported', getattr(__import__(package, fromlist=[file_name]), name))
+
+        # Dynamically call function
+        self.imported(input_data)
+
         return 0
 
 

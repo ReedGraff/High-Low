@@ -1,8 +1,8 @@
 import Bot # This is the local Python Module that we made
 
 # Initialization
-bot_1 = Bot.Bot("ya boi", "just got bamboozled")
-"""
+bot_1 = Bot.Bot("ya boi", "just got bamboozled", "Bot_1")
+
 # Find Functionality
 find_input = {
     "function_name": "One_Stock",
@@ -16,15 +16,30 @@ find_output = bot_1.Find(find_input)
 finance_input = {
     "function_name": "Set",
     "parameters": [
-        "10", # 10 dollars
+        10, # 10 dollars
+        False # 10 dollars infinitely... If it was False, then it would be limited to 10 dollars 
+    ]
+}
+"""
+finance_input = {
+    "function_name": "Set",
+    "parameters": [
+        10, # 10 dollars
         True # 10 dollars infinitely... If it was False, then it would be limited to 10 dollars 
     ]
 }
-finance_output = bot_1.Finance(finance_input)
 """
+finance_output = bot_1.Finance(finance_input)
 
 # Algorithm Functionality
-bot_1.Algorithm(find_output, finance_output)
+algorithm_input = {
+    "function_name": "Gates",
+    "parameters": [
+        find_output,
+        finance_output
+    ]
+}
+bot_1.Algorithm(algorithm_input)
 
 
 

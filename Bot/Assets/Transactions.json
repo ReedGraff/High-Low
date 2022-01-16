@@ -1,14 +1,8 @@
 {
-    "Bot_Name": {
-        "Current Spent": 0, 
+    "Bot_1": {
+        "Current Amount Spent": 0,
+        "Current Holdings (From Bot)": [],
         "Transactions": [
-            {
-                "trade_number": 123,
-                "type": "Buy or Sell",
-                "amount_of_stock": 123,
-                "USD_value": 123,
-                "date-time": "DD/MM/YY 12:34"
-            }
         ]
     }
 }
