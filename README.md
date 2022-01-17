@@ -42,4 +42,8 @@ ML Ideas:
 - Value Investing = finding undervalued stocks... similar to nft logic...
 External Libraries:
 - "Being used": robin_stocks... (Guide can be seen here: https://algotrading101.com/learn/robinhood-api-guide/)
-- "Not being used": https://github.com/sanko/Robinhood
+- "Not being used": https://github.com/sanko/Robinhood  
+  
+To Do:
+- Change "Ticker" value to a list, so that algorithm can iterate through the ticker as opposed to being fixated on it...
+- Fix the profits... because right now it is being saved as whatever profit was made from a sale is staying in the stock that it is selling... Whereas we would prefer it being sold and returned to the bank

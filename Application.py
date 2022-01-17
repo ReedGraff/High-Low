@@ -7,7 +7,7 @@ bot_1 = Bot.Bot("ya boi", "just got bamboozled", "Bot_1")
 find_input = {
     "function_name": "One_Stock",
     "parameters": [
-        "AAPL"
+        "FIS"
     ]
 }
 find_output = bot_1.Find(find_input)
